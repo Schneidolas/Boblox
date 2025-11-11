@@ -18,12 +18,12 @@ document.addEventListener('DOMContentLoaded', function() {
       measurementId: "G-JHE06SY74Q"
     };
 
-     // Inicializa o Firebase
+    // Inicializa o Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    const db = firebase.firestore(); // Habilitando a conexão com o banco de dados Firestore
+    const db = firebase.firestore();
 
-    // --- LÓGICA DE NAVEGAÇÃO (NÃO MUDA) ---
+    // --- LÓGICA DE NAVEGAÇÃO ---
     const pageContents = document.querySelectorAll('.page-content');
     const navLinks = document.querySelectorAll('.nav-link');
     const pageTitles = {
@@ -33,7 +33,6 @@ document.addEventListener('DOMContentLoaded', function() {
         myboblox: 'My Boblox - Player',
         forum: 'Forum - Boblox'
     };
-
     function showPage(pageId) {
         pageContents.forEach(page => page.classList.remove('active'));
         const activePage = document.getElementById('page-' + pageId);
@@ -42,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function() {
             document.title = pageTitles[pageId] || 'Boblox';
         }
     }
-
     navLinks.forEach(link => {
         link.addEventListener('click', (event) => {
             event.preventDefault();
@@ -51,58 +49,44 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // --- LÓGICA DE LOGIN E AUTENTICAÇÃO ATUALIZADA ---
+    // --- LÓGICA DE LOGIN E AUTENTICAÇÃO ---
     const loginSection = document.getElementById('login-section');
-
     const authFormHTML = `
         <div class="login-box">
             <h3 id="form-title">Member Login</h3>
             <form id="auth-form">
-                <!-- O campo de username será inserido aqui pelo JS quando necessário -->
                 <div id="username-field-container"></div> 
-                
                 <label for="email">Email</label>
                 <input type="email" id="email" required>
-                
                 <label for="password">Password (6+ characters)</label>
                 <input type="password" id="password" required>
-
                 <p id="error-message" style="color:red; font-size:10px; min-height: 12px;"></p>
-                
                 <input type="submit" id="submit-btn" value="Login" class="btn-login">
                 <button type="button" id="toggle-form-btn" class="btn-login" style="margin-top:5px; background-color:#4CAF50;">Need an account? Register</button>
             </form>
         </div>
         <img src="images/default-avatar.png" alt="Default Avatar" class="default-avatar">
     `;
-
-    // Função que mostra a tela de boas-vindas com dados do perfil
     function showWelcomeMessage(user, userData) {
         const username = userData.username || user.email.split('@')[0];
         const profilePic = userData.profilePictureUrl || 'images/default-avatar.png';
-
-        // Atualiza a página de perfil dinamicamente
         const profilePageTitle = document.querySelector('#page-myboblox .page-title');
         if (profilePageTitle) profilePageTitle.textContent = `${username}'s Page`;
-
         loginSection.innerHTML = `
             <div class="login-box">
                 <h3>Welcome, ${username}!</h3>
-                <p style="margin:5px 0; font-size:10px; color:green;">${user.emailVerified ? 'Email Verified' : '<strong style="color:orange;">Please check your email to verify your account.</strong>'}</p>
+                <p style="margin:5px 0; font-size:10px;">${user.emailVerified ? '<span style="color:green;">Email Verified</span>' : '<strong style="color:orange;">Please verify your email.</strong>'}</p>
                 <a href="#" class="nav-link profile-button" data-page="myboblox" style="display:block; text-align:center; text-decoration:none; padding: 5px; margin-bottom:5px;">Go to My Boblox</a>
                 <button id="logout-btn" class="btn-login" style="background-color: #f44336;">Logout</button>
             </div>
              <img src="${profilePic}" alt="Avatar" class="default-avatar">
         `;
         document.getElementById('logout-btn').addEventListener('click', handleLogout);
-        // Garante que o link de perfil funcione
         loginSection.querySelector('.nav-link[data-page="myboblox"]').addEventListener('click', (e) => {
             e.preventDefault();
             showPage('myboblox');
         });
     }
-
-    // Função que mostra o formulário (seja de login ou registro)
     function showAuthForm(isRegisterView = false) {
         loginSection.innerHTML = authFormHTML;
         const form = document.getElementById('auth-form');
@@ -110,74 +94,45 @@ document.addEventListener('DOMContentLoaded', function() {
         const usernameContainer = document.getElementById('username-field-container');
         const submitBtn = document.getElementById('submit-btn');
         const toggleBtn = document.getElementById('toggle-form-btn');
-
+        form.removeEventListener('submit', handleLogin);
+        form.removeEventListener('submit', handleRegister);
         if (isRegisterView) {
             title.textContent = 'Register New Account';
-            usernameContainer.innerHTML = `
-                <label for="username">Username</label>
-                <input type="text" id="username" required>
-            `;
+            usernameContainer.innerHTML = `<label for="username">Username</label><input type="text" id="username" required>`;
             submitBtn.value = 'Register';
             toggleBtn.textContent = 'Already have an account? Login';
             form.addEventListener('submit', handleRegister);
             toggleBtn.addEventListener('click', () => showAuthForm(false));
         } else {
             title.textContent = 'Member Login';
-            usernameContainer.innerHTML = ''; // Limpa o campo de username
+            usernameContainer.innerHTML = '';
             submitBtn.value = 'Login';
             toggleBtn.textContent = 'Need an account? Register';
             form.addEventListener('submit', handleLogin);
             toggleBtn.addEventListener('click', () => showAuthForm(true));
         }
     }
-    
-    // --- FUNÇÕES DE AUTENTICAÇÃO DO FIREBASE ---
-    
     auth.onAuthStateChanged(async (user) => {
         if (user) {
-            // Usuário está logado. Vamos buscar seus dados no Firestore.
             const userDocRef = db.collection('users').doc(user.uid);
             const userDoc = await userDocRef.get();
-
-            if (userDoc.exists) {
-                showWelcomeMessage(user, userDoc.data());
-            } else {
-                showWelcomeMessage(user, {}); // Mostra com dados padrões se o perfil não for encontrado
-            }
+            showWelcomeMessage(user, userDoc.exists ? userDoc.data() : {});
         } else {
-            // Nenhum usuário logado.
             showAuthForm(false);
         }
     });
-    
-    function handleLogin(e) {
-        e.preventDefault();
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-        const errorMessage = document.getElementById('error-message');
-
-        auth.signInWithEmailAndPassword(email, password)
-            .catch(error => errorMessage.textContent = error.message);
-    }
-
+    function handleLogin(e) { e.preventDefault(); auth.signInWithEmailAndPassword(document.getElementById('email').value, document.getElementById('password').value).catch(error => document.getElementById('error-message').textContent = error.message); }
     function handleRegister(e) {
         e.preventDefault();
-        const username = document.getElementById('username').value;
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
+        const username = document.getElementById('username').value;
         const errorMessage = document.getElementById('error-message');
-        
         errorMessage.textContent = '';
-
-        // 1. Criar o usuário no Firebase Authentication
         auth.createUserWithEmailAndPassword(email, password)
             .then(userCredential => {
                 const user = userCredential.user;
-                
-                // 2. Enviar e-mail de verificação
                 user.sendEmailVerification();
-                
-                // 3. Criar o documento do perfil do usuário no Firestore
                 return db.collection('users').doc(user.uid).set({
                     username: username,
                     email: email,
@@ -186,18 +141,9 @@ document.addEventListener('DOMContentLoaded', function() {
                     profilePictureUrl: 'images/default-avatar.png' 
                 });
             })
-            .then(() => {
-                alert('Account created! Please check your email to verify your account.');
-            })
-            .catch(error => {
-                errorMessage.textContent = error.message;
-            });
+            .then(() => { alert('Account created! Please check your email to verify your account.'); })
+            .catch(error => { errorMessage.textContent = error.message; });
     }
-    
-    function handleLogout() {
-        auth.signOut();
-    }
-
-    // --- INICIALIZAÇÃO ---
+    function handleLogout() { auth.signOut(); }
     showPage('home');
 });
