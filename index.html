@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boblox - A Virtual Playworld</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="container">
+        <!-- CABEÇALHO (SEM BUILDERS CLUB) -->
+        <header>
+            <div class="header-content">
+                <a href="#" class="nav-link" data-page="home"><img src="images/logo-boblox.png" alt="Boblox Logo" class="logo"></a>
+                <a href="#" class="btn-signup">Sign Up and Play ></a>
+            </div>
+        </header>
+
+        <!-- NAVEGAÇÃO (COM ATRIBUTOS DATA-PAGE) -->
+        <nav>
+            <ul>
+                <li><a href="#" class="nav-link" data-page="myboblox">My Boblox</a></li>
+                <li><a href="#" class="nav-link" data-page="games">Games</a></li>
+                <li><a href="#" class="nav-link" data-page="catalog">Catalog</a></li>
+                <li><a href="#">Builders Club</a></li>
+                <li><a href="#">Browse</a></li>
+                <li><a href="#" class="nav-link" data-page="forum">Forum</a></li>
+                <li><a href="#">News <img src="images/rss-icon.png" class="rss-icon"></a></li>
+                <li><a href="#">Parents</a></li>
+                <li><a href="#">Help</a></li>
+            </ul>
+        </nav>
+        
+        <!-- CONTAINER PARA AS PÁGINAS -->
+        <div id="main-content-container">
+
+            <!-- PÁGINA: HOME -->
+            <section id="page-home" class="page-content active">
+                <main class="main-content-home">
+                    <aside class="sidebar-login" id="login-section">
+                        <!-- Gerenciado por JS -->
+                    </aside>
+                    <section class="main-promo">
+                        <h1>Boblox Virtual Playworld</h1>
+                        <p class="promo-subtitle">Boblox is Free!</p>
+                        <div class="promo-points">
+                            <div class="point"><div class="point-number">1</div><div class="point-text"><strong>Build your personal Place</strong><p>Create buildings, vehicles, scenery, and traps with thousands of virtual bricks.</p></div></div>
+                            <div class="point"><div class="point-number">2</div><div class="point-text"><strong>Meet new friends online</strong><p>Visit your friend's place, chat in 3D, and build together.</p></div></div>
+                            <div class="point"><div class="point-number">3</div><div class="point-text"><strong>Battle in the Brick Arenas</strong><p>Play with the slingshot, rocket, or other brick battle tools. Be careful not to get "pwnxxed".</p></div></div>
+                        </div>
+                        <div class="safety-info"><img src="images/kid-safe.png" alt="Kid Safe"><p>Works with your Windows PC!</p></div>
+                    </section>
+                    <aside class="sidebar-promo">
+                        <div class="build-it-promo"><img src="images/build-it.png" alt="Build It..."><a href="#" class="btn-download">FREE - Download and Play!</a></div>
+                    </aside>
+                </main>
+                <section class="cool-places">
+                    <h2>Cool Places</h2><p>Check out some of our favorite Boblox places!</p>
+                    <div class="places-grid"><img src="images/place1.jpg"><img src="images/place2.jpg"><img src="images/place3.jpg"><img src="images/place4.jpg"><img src="images/place5.jpg"></div>
+                </section>
+            </section>
+
+            <!-- PÁGINA: GAMES -->
+            <section id="page-games" class="page-content">
+                <main class="main-content-page">
+                    <h1 class="page-title">Games</h1>
+                    <div class="page-controls"><span>Page 1 of 11: <a href="#">Next >></a></span></div>
+                    <div class="games-container">
+                        <aside class="page-sidebar"><h3>Browse</h3><ul><li><strong>Most Popular</strong></li><li><a href="#">Recently Updated</a></li></ul><h3>Time</h3><ul><li><strong>Now</strong></li><li><a href="#">Past Day</a></li></ul></aside>
+                        <section class="games-grid">
+                            <div class="game-card"><a href="#"><img src="images/game-cloud.jpg"></a><a href="#" class="game-title">---Cloud city v 3---</a><span>Creator: <a href="#">Anaminus</a></span><strong>69 players online</strong></div>
+                            <div class="game-card"><a href="#"><img src="images/game-prison.jpg"></a><a href="#" class="game-title">Prison escape</a><span>Creator: <a href="#">alexnewd</a></span><strong>63 players online</strong></div>
+                            <div class="game-card"><a href="#"><img src="images/game-cheesy.jpg"></a><a href="#" class="game-title">Cheesy's Obstacle Course</a><span>Creator: <a href="#">cheesy</a></span><strong>53 players online</strong></div>
+                        </section>
+                    </div>
+                </main>
+            </section>
+
+            <!-- PÁGINA: CATALOG -->
+            <section id="page-catalog" class="page-content">
+                <main class="main-content-page">
+                    <div class="search-bar"><input type="text"><input type="submit" value="Search"></div>
+                    <div class="page-controls"><span>Page 1 of 4: <a href="#">Next >></a></span></div>
+                    <div class="catalog-container">
+                         <aside class="page-sidebar"><h3>Browse</h3><ul><li><strong>Featured</strong></li><li><a href="#">For Sale</a></li></ul><h3>Category</h3><ul><li><strong>Hats</strong></li><li><a href="#">Shirts</a></li></ul></aside>
+                        <section class="catalog-grid">
+                            <div class="item-card"><a href="#"><img src="images/item-visor.png"></a><a href="#" class="item-title">BOBLOX VISOR</a><span>Creator: BOBLOX</span><span>Tix: <strong>8</strong></span></div>
+                            <div class="item-card"><a href="#"><img src="images/item-ribbons.png"></a><a href="#" class="item-title">Ribbons</a><span>Creator: BOBLOX</span><span>Tix: <strong>20</strong></span></div>
+                            <div class="item-card"><a href="#"><img src="images/item-lampshade.png"></a><a href="#" class="item-title">Lampshade</a><span>Creator: BOBLOX</span><span>Tix: <strong>22</strong></span></div>
+                             <div class="item-card"><a href="#"><img src="images/item-firefighter.png"></a><a href="#" class="item-title">Firefighter Helmet</a><span>Creator: BOBLOX</span><span>Tix: <strong>40</strong></span></div>
+                             <div class="item-card"><a href="#"><img src="images/item-mouseears.png"></a><a href="#" class="item-title">Mouse Ears</a><span>Creator: BOBLOX</span><span>Tix: <strong>30</strong></span></div>
+                        </section>
+                    </div>
+                </main>
+            </section>
+            
+            <!-- PÁGINA: MY BOBLOX -->
+            <section id="page-myboblox" class="page-content">
+                 <main class="main-content-page">
+                    <h1 class="page-title">Player1's Page</h1>
+                    <div class="profile-container">
+                        <aside class="profile-sidebar"><img src="images/default-avatar.png" class="profile-avatar"><h3>Statistics</h3><ul><li>Friends: 42</li><li>Forum Posts: 137</li></ul><button class="profile-button">Send Friend Request</button></aside>
+                        <section class="profile-main">
+                            <div class="profile-section"><h2>Player1's Blurb</h2><p>Welcome to my profile! I like building obbys and battle arenas. Check out my places below!</p></div>
+                            <div class="profile-section"><h2>Player1's Friends (6)</h2><div class="friends-grid"><div class="friend-card"><img src="images/friend-avatar.png"><a href="#">Telamon</a></div><div class="friend-card"><img src="images/friend-avatar.png"><a href="#">BuilderMan</a></div><div class="friend-card"><img src="images/friend-avatar.png"><a href="#">cheesy</a></div></div></div>
+                        </section>
+                    </div>
+                </main>
+            </section>
+            
+            <!-- PÁGINA: FORUM -->
+            <section id="page-forum" class="page-content">
+                <main class="main-content-page">
+                    <div class="search-bar"><input type="text"><input type="submit" value="Search Boblox Forums"></div>
+                    <table class="forum-table">
+                        <thead><tr><th class="th-forum">Forum</th><th class="th-threads">Threads</th><th class="th-posts">Posts</th><th class="th-lastpost">Last Post</th></tr></thead>
+                        <tbody>
+                            <tr class="forum-category"><td colspan="4">Boblox</td></tr>
+                            <tr><td><div class="forum-info"><img src="images/forum-icon-general.png"><div><a href="#" class="forum-title">General Discussion</a><p>Conversation about all things BOBLOX.</p></div></div></td><td class="forum-stats">13,006</td><td class="forum-stats">124,125</td><td class="forum-lastpost"><span>Today @ 11:00 PM</span><span>by <a href="#">heroflix201</a></span></td></tr>
+                            <tr class="forum-category"><td colspan="4">Help Center</td></tr>
+                            <tr><td><div class="forum-info"><img src="images/forum-icon-help.png"><div><a href="#" class="forum-title">Building Help</a><p>Learn the ins and outs of building structures.</p></div></div></td><td class="forum-stats">2,484</td><td class="forum-stats">10,006</td><td class="forum-lastpost"><span>Today @ 10:58 PM</span><span>by <a href="#">blobbyblob</a></span></td></tr>
+                        </tbody>
+                    </table>
+                </main>
+            </section>
+
+        </div>
+
+        <!-- RODAPÉ -->
+        <footer>
+            <p>Boblox, "Online Building Toy", characters, logos, names, and all related indicia are trademarks of <a href="#">Boblox Corporation</a>. ©2007. Patents pending.</p>
+            <p>Boblox Corp. is not affiliated with Lego, MegaBloks, Bionicle, Pokemon, Nintendo, etc. Aarrr!</p>
+            <div class="footer-links"><a href="#">Privacy Policy</a> | <a href="#">Contact Us</a> | <a href="#">About Us</a> | <a href="#">Jobs</a></div>
+        </footer>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
