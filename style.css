@@ -1,0 +1,96 @@
+/* --- GERAL & ESTRUTURA --- */
+body { background-color: #D3D3D3; font-family: Verdana, Geneva, sans-serif; font-size: 12px; margin: 0; padding: 0; text-align: center; }
+#container { width: 970px; margin: 10px auto; background-color: #FFFFFF; border: 1px solid #6E6E6E; text-align: left; }
+a { color: #0000FF; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* --- CONTROLE DAS PÁGINAS (NOVO) --- */
+.page-content { display: none; }
+.page-content.active { display: block; }
+
+/* --- CABEÇALHO --- */
+header { background: linear-gradient(to bottom, #5A82B4 0%, #3E6494 100%); padding: 10px; border-bottom: 1px solid #000; }
+.header-content { display: flex; justify-content: space-between; align-items: center; }
+.logo { width: 200px; }
+.btn-signup { background-color: #FFC400; border: 2px outset #FFA500; color: #000; font-weight: bold; font-size: 18px; padding: 10px 15px; text-decoration: none; }
+.btn-signup:hover { background-color: #FFD700; }
+
+/* --- NAVEGAÇÃO --- */
+nav { background-color: #E9E9E9; border-bottom: 1px solid #BDBDBD; padding: 5px 10px; }
+nav ul { margin: 0; padding: 0; list-style: none; }
+nav ul li { display: inline-block; margin-right: 15px; }
+nav ul li a { color: #0000FF; font-weight: bold; font-size: 13px; }
+.rss-icon { vertical-align: middle; width: 14px; }
+
+/* --- PÁGINA PRINCIPAL --- */
+.main-content-home { display: flex; padding: 15px; gap: 15px; }
+.sidebar-login { width: 170px; text-align: center; flex-shrink: 0; }
+.login-box { border: 1px solid #BDBDBD; background-color: #F7F7F7; padding: 10px; }
+.login-box h3 { margin: 0 0 10px 0; font-size: 14px; background-color: #DEDEDE; padding: 4px; border: 1px solid #BDBDBD; text-align: center; }
+.login-box label { display: block; margin-bottom: 3px; text-align: left; }
+.login-box input[type="text"], .login-box input[type="password"] { width: 100%; box-sizing: border-box; margin-bottom: 10px; border: 1px solid #7F9DB9; padding: 2px; }
+.btn-login { width: 100%; padding: 4px; }
+.forgot-password { font-size: 11px; display: block; margin-top: 5px; }
+.default-avatar { margin-top: 20px; width: 100%; }
+.main-promo { flex-grow: 1; }
+.main-promo h1 { font-size: 20px; margin-top: 0; border-bottom: 1px solid #BDBDBD; padding-bottom: 5px; }
+.promo-points .point { display: flex; align-items: flex-start; margin-bottom: 15px; }
+.point-number { background-color: #5A82B4; color: white; font-size: 24px; font-weight: bold; border-radius: 50%; width: 35px; height: 35px; text-align: center; line-height: 35px; margin-right: 10px; flex-shrink: 0; }
+.point-text p { margin: 3px 0 0 0; font-size: 11px; color: #555; }
+.safety-info { border: 1px dashed #BDBDBD; padding: 10px; text-align: center; margin-top: 20px; }
+.sidebar-promo { width: 250px; flex-shrink: 0; }
+.build-it-promo img { width: 100%; border: 1px solid #000; }
+.btn-download { display: block; background-color: #FFC400; border: 2px outset #FFA500; color: #000; font-weight: bold; font-size: 22px; padding: 15px; text-decoration: none; text-align: center; margin-top: 10px; }
+.cool-places { clear: both; border-top: 1px solid #BDBDBD; padding: 15px; }
+.places-grid { display: flex; justify-content: space-around; margin-top: 10px; }
+.places-grid img { width: 150px; height: 100px; border: 1px solid #000; }
+
+/* --- PÁGINAS INTERNAS (Games, Catalog, etc.) --- */
+.main-content-page { padding: 15px; }
+.page-title { font-size: 24px; margin: 0 0 10px 0; }
+.search-bar { border: 1px solid #BDBDBD; background-color: #F0F0F0; padding: 5px; margin-bottom: 10px; }
+.page-controls, .page-controls-bottom { text-align: right; margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #BDBDBD; }
+.games-container, .catalog-container { display: flex; gap: 15px; }
+.page-sidebar { width: 180px; flex-shrink: 0; }
+.page-sidebar h3 { font-size: 14px; margin: 15px 0 5px 0; border-bottom: 1px solid #BDBDBD; }
+.page-sidebar ul { list-style: none; padding: 0; margin: 0; }
+.games-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; flex-grow: 1; }
+.game-card { border: 1px solid #BDBDBD; padding: 5px; font-size: 11px; }
+.game-card img { width: 100%; height: 120px; border: 1px solid #000; margin-bottom: 5px; }
+.game-card span { display: block; color: #555; }
+.game-card strong { color: #000; }
+.game-title { font-weight: bold; font-size: 12px; display: block; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.catalog-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; flex-grow: 1; }
+.item-card { border: 1px solid #BDBDBD; padding: 5px; font-size: 11px; text-align: center; }
+.item-card img { width: 100%; height: 100px; object-fit: contain; margin-bottom: 5px; }
+
+/* --- PÁGINA DE PERFIL (MY BOBLOX) --- */
+.profile-container { display: flex; gap: 20px; }
+.profile-sidebar { width: 200px; flex-shrink: 0; text-align: center; }
+.profile-avatar { width: 100%; border: 1px solid #000; }
+.profile-sidebar h3 { font-size: 14px; margin-top: 15px; }
+.profile-sidebar ul { list-style: none; padding: 0; margin: 5px 0 15px 0; text-align: left; }
+.profile-button { width: 100%; margin-bottom: 5px; padding: 5px; }
+.profile-main { flex-grow: 1; }
+.profile-section { border: 1px solid #BDBDBD; padding: 10px; margin-bottom: 15px; }
+.profile-section h2 { margin: 0 0 10px 0; font-size: 16px; border-bottom: 1px solid #BDBDBD; padding-bottom: 5px; }
+.friends-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 10px; }
+.friend-card { text-align: center; }
+.friend-card img { width: 75px; height: 75px; border: 1px solid #000; display: block; margin: 0 auto 5px auto; }
+
+/* --- PÁGINA DO FÓRUM --- */
+.forum-table { width: 100%; border-collapse: collapse; border: 1px solid #888; }
+.forum-table th { background-color: #DEDEDE; padding: 8px; border: 1px solid #888; text-align: left; }
+.forum-table td { padding: 8px; border: 1px solid #DDD; vertical-align: top; }
+.forum-table tbody tr:nth-child(even) { background-color: #F7F7F7; }
+.forum-category td { background-color: #5A82B4; color: white; font-weight: bold; padding: 5px; }
+.forum-info { display: flex; align-items: center; gap: 10px; }
+.forum-info img { width: 32px; height: 32px; }
+.forum-title { font-weight: bold; font-size: 14px; }
+.forum-info p { margin: 3px 0 0 0; font-size: 11px; color: #555; }
+.forum-stats { text-align: center; vertical-align: middle; font-size: 13px; }
+.forum-lastpost { font-size: 11px; }
+.forum-lastpost span { display: block; }
+
+/* --- RODAPÉ --- */
+footer { clear: both; background-color: #F7F7F7; border-top: 1px solid #BDBDBD; padding: 10px; text-align: center; font-size: 10px; color: #666; }
