@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
       measurementId: "G-JHE06SY74Q"
     };
 
- // Inicializa o Firebase
+     // Inicializa o Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     const db = firebase.firestore(); // Habilitando a conexão com o banco de dados Firestore
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // --- LÓGICA DE LOGIN E AUTENTICAÇÃO ATUALIZADA ---
     const loginSection = document.getElementById('login-section');
 
-    const loginHTML = `
+    const authFormHTML = `
         <div class="login-box">
             <h3 id="form-title">Member Login</h3>
             <form id="auth-form">
@@ -69,8 +69,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 <p id="error-message" style="color:red; font-size:10px; min-height: 12px;"></p>
                 
-                <input type="submit" id="login-btn" value="Login" class="btn-login">
-                <button type="button" id="register-view-btn" class="btn-login" style="margin-top:5px; background-color:#4CAF50;">Need an account? Register</button>
+                <input type="submit" id="submit-btn" value="Login" class="btn-login">
+                <button type="button" id="toggle-form-btn" class="btn-login" style="margin-top:5px; background-color:#4CAF50;">Need an account? Register</button>
             </form>
         </div>
         <img src="images/default-avatar.png" alt="Default Avatar" class="default-avatar">
@@ -104,12 +104,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Função que mostra o formulário (seja de login ou registro)
     function showAuthForm(isRegisterView = false) {
-        loginSection.innerHTML = loginHTML;
+        loginSection.innerHTML = authFormHTML;
         const form = document.getElementById('auth-form');
         const title = document.getElementById('form-title');
         const usernameContainer = document.getElementById('username-field-container');
-        const loginBtn = document.getElementById('login-btn');
-        const registerViewBtn = document.getElementById('register-view-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const toggleBtn = document.getElementById('toggle-form-btn');
 
         if (isRegisterView) {
             title.textContent = 'Register New Account';
@@ -117,19 +117,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 <label for="username">Username</label>
                 <input type="text" id="username" required>
             `;
-            loginBtn.value = 'Register';
-            registerViewBtn.textContent = 'Already have an account? Login';
-            form.removeEventListener('submit', handleLogin);
+            submitBtn.value = 'Register';
+            toggleBtn.textContent = 'Already have an account? Login';
             form.addEventListener('submit', handleRegister);
-            registerViewBtn.addEventListener('click', () => showAuthForm(false));
+            toggleBtn.addEventListener('click', () => showAuthForm(false));
         } else {
             title.textContent = 'Member Login';
             usernameContainer.innerHTML = ''; // Limpa o campo de username
-            loginBtn.value = 'Login';
-            registerViewBtn.textContent = 'Need an account? Register';
-            form.removeEventListener('submit', handleRegister);
+            submitBtn.value = 'Login';
+            toggleBtn.textContent = 'Need an account? Register';
             form.addEventListener('submit', handleLogin);
-            registerViewBtn.addEventListener('click', () => showAuthForm(true));
+            toggleBtn.addEventListener('click', () => showAuthForm(true));
         }
     }
     
@@ -144,9 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (userDoc.exists) {
                 showWelcomeMessage(user, userDoc.data());
             } else {
-                // Caso raro: usuário existe na Auth mas não no DB.
-                // Pode acontecer se a criação do perfil falhar.
-                showWelcomeMessage(user, {}); // Mostra com dados padrões
+                showWelcomeMessage(user, {}); // Mostra com dados padrões se o perfil não for encontrado
             }
         } else {
             // Nenhum usuário logado.
@@ -171,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const password = document.getElementById('password').value;
         const errorMessage = document.getElementById('error-message');
         
-        errorMessage.textContent = ''; // Limpa erros antigos
+        errorMessage.textContent = '';
 
         // 1. Criar o usuário no Firebase Authentication
         auth.createUserWithEmailAndPassword(email, password)
@@ -185,13 +181,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 return db.collection('users').doc(user.uid).set({
                     username: username,
                     email: email,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp(), // Data de criação
-                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(), // Data do último login
-                    profilePictureUrl: 'images/default-avatar.png' // Foto de perfil padrão
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                    profilePictureUrl: 'images/default-avatar.png' 
                 });
             })
             .then(() => {
-                // Tudo deu certo, o onAuthStateChanged vai atualizar a UI
                 alert('Account created! Please check your email to verify your account.');
             })
             .catch(error => {
