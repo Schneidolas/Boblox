@@ -18,16 +18,12 @@ document.addEventListener('DOMContentLoaded', function() {
       measurementId: "G-JHE06SY74Q"
     };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
-
-    // Inicializa o Firebase
+ // Inicializa o Firebase
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
-    // const db = firebase.firestore(); // Descomente se for usar o banco de dados
+    const db = firebase.firestore(); // Habilitando a conexão com o banco de dados Firestore
 
-    // --- NAVEGAÇÃO ENTRE PÁGINAS (mesma lógica de antes) ---
+    // --- LÓGICA DE NAVEGAÇÃO (NÃO MUDA) ---
     const pageContents = document.querySelectorAll('.page-content');
     const navLinks = document.querySelectorAll('.nav-link');
     const pageTitles = {
@@ -55,58 +51,109 @@ const analytics = getAnalytics(app);
         });
     });
 
-    // --- LÓGICA DE LOGIN E AUTENTICAÇÃO REAL ---
+    // --- LÓGICA DE LOGIN E AUTENTICAÇÃO ATUALIZADA ---
     const loginSection = document.getElementById('login-section');
 
     const loginHTML = `
         <div class="login-box">
-            <h3>Member Login</h3>
-            <form id="login-form">
+            <h3 id="form-title">Member Login</h3>
+            <form id="auth-form">
+                <!-- O campo de username será inserido aqui pelo JS quando necessário -->
+                <div id="username-field-container"></div> 
+                
                 <label for="email">Email</label>
                 <input type="email" id="email" required>
-                <label for="password">Password</label>
+                
+                <label for="password">Password (6+ characters)</label>
                 <input type="password" id="password" required>
-                <p id="error-message" style="color:red; font-size:10px;"></p>
-                <input type="submit" value="Login" class="btn-login">
-                <button type="button" id="register-btn" class="btn-login" style="margin-top:5px; background-color:#4CAF50;">Register New Account</button>
+
+                <p id="error-message" style="color:red; font-size:10px; min-height: 12px;"></p>
+                
+                <input type="submit" id="login-btn" value="Login" class="btn-login">
+                <button type="button" id="register-view-btn" class="btn-login" style="margin-top:5px; background-color:#4CAF50;">Need an account? Register</button>
             </form>
         </div>
         <img src="images/default-avatar.png" alt="Default Avatar" class="default-avatar">
     `;
 
-    function showLoginForm() {
-        loginSection.innerHTML = loginHTML;
-        document.getElementById('login-form').addEventListener('submit', handleLogin);
-        document.getElementById('register-btn').addEventListener('click', handleRegister);
-    }
-    
-    function showWelcomeMessage(user) {
-        const username = user.displayName || user.email.split('@')[0];
+    // Função que mostra a tela de boas-vindas com dados do perfil
+    function showWelcomeMessage(user, userData) {
+        const username = userData.username || user.email.split('@')[0];
+        const profilePic = userData.profilePictureUrl || 'images/default-avatar.png';
+
+        // Atualiza a página de perfil dinamicamente
+        const profilePageTitle = document.querySelector('#page-myboblox .page-title');
+        if (profilePageTitle) profilePageTitle.textContent = `${username}'s Page`;
+
         loginSection.innerHTML = `
             <div class="login-box">
                 <h3>Welcome, ${username}!</h3>
-                <p style="margin: 10px 0; font-size:11px;">You are logged in.</p>
+                <p style="margin:5px 0; font-size:10px; color:green;">${user.emailVerified ? 'Email Verified' : '<strong style="color:orange;">Please check your email to verify your account.</strong>'}</p>
+                <a href="#" class="nav-link profile-button" data-page="myboblox" style="display:block; text-align:center; text-decoration:none; padding: 5px; margin-bottom:5px;">Go to My Boblox</a>
                 <button id="logout-btn" class="btn-login" style="background-color: #f44336;">Logout</button>
             </div>
-             <img src="images/default-avatar.png" alt="Avatar" class="default-avatar">
+             <img src="${profilePic}" alt="Avatar" class="default-avatar">
         `;
         document.getElementById('logout-btn').addEventListener('click', handleLogout);
+        // Garante que o link de perfil funcione
+        loginSection.querySelector('.nav-link[data-page="myboblox"]').addEventListener('click', (e) => {
+            e.preventDefault();
+            showPage('myboblox');
+        });
     }
 
+    // Função que mostra o formulário (seja de login ou registro)
+    function showAuthForm(isRegisterView = false) {
+        loginSection.innerHTML = loginHTML;
+        const form = document.getElementById('auth-form');
+        const title = document.getElementById('form-title');
+        const usernameContainer = document.getElementById('username-field-container');
+        const loginBtn = document.getElementById('login-btn');
+        const registerViewBtn = document.getElementById('register-view-btn');
+
+        if (isRegisterView) {
+            title.textContent = 'Register New Account';
+            usernameContainer.innerHTML = `
+                <label for="username">Username</label>
+                <input type="text" id="username" required>
+            `;
+            loginBtn.value = 'Register';
+            registerViewBtn.textContent = 'Already have an account? Login';
+            form.removeEventListener('submit', handleLogin);
+            form.addEventListener('submit', handleRegister);
+            registerViewBtn.addEventListener('click', () => showAuthForm(false));
+        } else {
+            title.textContent = 'Member Login';
+            usernameContainer.innerHTML = ''; // Limpa o campo de username
+            loginBtn.value = 'Login';
+            registerViewBtn.textContent = 'Need an account? Register';
+            form.removeEventListener('submit', handleRegister);
+            form.addEventListener('submit', handleLogin);
+            registerViewBtn.addEventListener('click', () => showAuthForm(true));
+        }
+    }
+    
     // --- FUNÇÕES DE AUTENTICAÇÃO DO FIREBASE ---
     
-    // VERIFICA O ESTADO DO USUÁRIO (se ele já está logado ou não)
-    auth.onAuthStateChanged(user => {
+    auth.onAuthStateChanged(async (user) => {
         if (user) {
-            console.log("Usuário está logado:", user);
-            showWelcomeMessage(user);
+            // Usuário está logado. Vamos buscar seus dados no Firestore.
+            const userDocRef = db.collection('users').doc(user.uid);
+            const userDoc = await userDocRef.get();
+
+            if (userDoc.exists) {
+                showWelcomeMessage(user, userDoc.data());
+            } else {
+                // Caso raro: usuário existe na Auth mas não no DB.
+                // Pode acontecer se a criação do perfil falhar.
+                showWelcomeMessage(user, {}); // Mostra com dados padrões
+            }
         } else {
-            console.log("Nenhum usuário logado.");
-            showLoginForm();
+            // Nenhum usuário logado.
+            showAuthForm(false);
         }
     });
     
-    // FUNÇÃO DE LOGIN
     function handleLogin(e) {
         e.preventDefault();
         const email = document.getElementById('email').value;
@@ -114,47 +161,48 @@ const analytics = getAnalytics(app);
         const errorMessage = document.getElementById('error-message');
 
         auth.signInWithEmailAndPassword(email, password)
-            .then(userCredential => {
-                // Login bem-sucedido, onAuthStateChanged vai cuidar do resto
-            })
-            .catch(error => {
-                console.error("Erro de login:", error);
-                errorMessage.textContent = error.message;
-            });
+            .catch(error => errorMessage.textContent = error.message);
     }
 
-    // FUNÇÃO DE REGISTRO
     function handleRegister(e) {
         e.preventDefault();
+        const username = document.getElementById('username').value;
         const email = document.getElementById('email').value;
         const password = document.getElementById('password').value;
         const errorMessage = document.getElementById('error-message');
         
-        if(password.length < 6) {
-            errorMessage.textContent = "Password must be at least 6 characters.";
-            return;
-        }
+        errorMessage.textContent = ''; // Limpa erros antigos
 
+        // 1. Criar o usuário no Firebase Authentication
         auth.createUserWithEmailAndPassword(email, password)
             .then(userCredential => {
-                // Registro bem-sucedido, onAuthStateChanged vai cuidar do resto
-                alert('Account created successfully! You are now logged in.');
+                const user = userCredential.user;
+                
+                // 2. Enviar e-mail de verificação
+                user.sendEmailVerification();
+                
+                // 3. Criar o documento do perfil do usuário no Firestore
+                return db.collection('users').doc(user.uid).set({
+                    username: username,
+                    email: email,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp(), // Data de criação
+                    lastLogin: firebase.firestore.FieldValue.serverTimestamp(), // Data do último login
+                    profilePictureUrl: 'images/default-avatar.png' // Foto de perfil padrão
+                });
+            })
+            .then(() => {
+                // Tudo deu certo, o onAuthStateChanged vai atualizar a UI
+                alert('Account created! Please check your email to verify your account.');
             })
             .catch(error => {
-                console.error("Erro de registro:", error);
                 errorMessage.textContent = error.message;
             });
     }
     
-    // FUNÇÃO DE LOGOUT
     function handleLogout() {
-        auth.signOut().then(() => {
-            // Logout bem-sucedido, onAuthStateChanged vai cuidar de mostrar o form de login
-        }).catch(error => {
-            console.error("Erro de logout:", error);
-        });
+        auth.signOut();
     }
 
     // --- INICIALIZAÇÃO ---
-    showPage('home'); // Mostra a página inicial ao carregar
+    showPage('home');
 });
